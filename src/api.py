@@ -738,6 +738,7 @@ class AutoRewarderAPI:
           2. Mobile phase — iPhone UA, `mobile_count` Bing searches only.
         Either count may be 0 to skip that phase.
         """
+        all_ids = [i["id"] for i in self.account_manager._read_index()]        
         if self.account_manager.current_id() is None:
             self.log("[ERROR] No account selected. Add one via the dropdown.")
             if self._webview_window:
@@ -790,6 +791,10 @@ class AutoRewarderAPI:
             except Exception:
                 pass
             self._run_lock.release()
+            
+            if all_ids.index(self.account_manager.current_id()) != len(all_ids)-1:
+                self.switch_account(all_ids[all_ids.index(self.account_manager.current_id()) + 1])
+                self.main(30, 20)
 
     def _run_phase(self, mobile, count, do_daily_set):
         """
